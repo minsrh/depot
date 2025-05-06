@@ -1,0 +1,6 @@
+id=nezha-agent
+name=Nezha-Agent
+version=1.0
+versionCode=1
+author=null
+description=run and keep nezha-agent alive
