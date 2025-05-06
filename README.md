@@ -1,4 +1,5 @@
 # Magisk for Android
+> 温馨提示：此模块面向ChatGPT生成
 
 **修改模块压缩包中 `/bin/config.yml` 的配置文件，再用 Magisk 刷入即可**
 
