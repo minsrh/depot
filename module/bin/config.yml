@@ -6,7 +6,7 @@ disable_force_update: false
 disable_nat: false
 disable_send_query: false
 gpu: false
-insecure_tls: true
+insecure_tls: false
 ip_report_period: 3000
 report_delay: 1
 self_update_period: 0
