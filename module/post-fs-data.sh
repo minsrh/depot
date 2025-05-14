@@ -3,15 +3,31 @@
 MODDIR=${0%/*}
 AGENT="$MODDIR/bin/nezha-agent"
 
-# 如果 nezha-agent 没有执行权限，则添加
-if [ ! -x "$AGENT" ]; then
-    chmod +x "$AGENT"
-fi
+chmod +x "$AGENT"
+echo "nezha-agent" > /sys/power/wake_lock 2>/dev/null
 
-# 启动 nezha-agent 并保持运行，防止崩溃退出
+RETRY_COUNT=0
+MAX_RETRY=5
+RETRY_INTERVAL=30
+
+has_network() {
+    ping -c 1 -W 1 223.5.5.5 >/dev/null 2>&1
+    return $?
+}
+
 while true; do
-    # 直接启动 nezha-agent，输出重定向到 /dev/null
-    $AGENT &>/dev/null &
-    wait $!
-    sleep 30  # 等待 30 秒钟后重启程序，防止进程崩溃后马上重启
+    if has_network; then
+        "$AGENT" >/dev/null 2>&1 &
+        PID=$!
+        wait $PID
+        RETRY_COUNT=$((RETRY_COUNT + 1))
+        if [ "$RETRY_COUNT" -ge "$MAX_RETRY" ]; then
+            sleep 600
+            RETRY_COUNT=0
+        else
+            sleep "$RETRY_INTERVAL"
+        fi
+    else
+        sleep 30
+    fi
 done
