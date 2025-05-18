@@ -51,7 +51,8 @@
 
 /
 ├── bin/
-│ ├── nezha-agent # 可执行文件
-│ └── config.yml # 探针配置文件（需手动修改）
-├── service.sh # 后台守护进程脚本
-└── post-fs-data.sh # 系统早期初始化脚本
+│   ├── nezha-agent       # 可执行文件
+│   └── config.yml        # 探针配置文件（需手动修改）
+├── service.sh            # 后台守护进程脚本
+└── post-fs-data.sh       # 系统早期初始化脚本
+
