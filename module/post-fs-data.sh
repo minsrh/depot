@@ -1,33 +1,10 @@
 #!/system/bin/sh
-
 MODDIR=${0%/*}
-AGENT="$MODDIR/bin/nezha-agent"
+CERT_FILE="$MODDIR/cacerts.pem"
 
-chmod +x "$AGENT"
-echo "nezha-agent" > /sys/power/wake_lock 2>/dev/null
+# 仅首次启动时生成证书
+if [ ! -f "$CERT_FILE" ]; then
+  cat /system/etc/security/cacerts/* > "$CERT_FILE"
+fi
 
-RETRY_COUNT=0
-MAX_RETRY=5
-RETRY_INTERVAL=30
-
-has_network() {
-    ping -c 1 -W 1 223.5.5.5 >/dev/null 2>&1
-    return $?
-}
-
-while true; do
-    if has_network; then
-        "$AGENT" >/dev/null 2>&1 &
-        PID=$!
-        wait $PID
-        RETRY_COUNT=$((RETRY_COUNT + 1))
-        if [ "$RETRY_COUNT" -ge "$MAX_RETRY" ]; then
-            sleep 600
-            RETRY_COUNT=0
-        else
-            sleep "$RETRY_INTERVAL"
-        fi
-    else
-        sleep 30
-    fi
-done
+chmod +x "$MODDIR/bin/nezha-agent"
